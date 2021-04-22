@@ -140,9 +140,14 @@ void GameApp::UpdateScene(float dt)
 	if (m_CurrMode == ShowMode::WoodCrate)
 	{
 		static float phi = 0.0f, theta = 0.0f;
-		phi += 0.0001f, theta += 0.00015f;
+		static float ahi = 0.0f, aheta = 0.0f;
+		phi += 0.0001f, theta += 0.00015f; 
+		ahi += 0.0001f; aheta += 0.001f;
+		XMMATRIX X = XMMatrixRotationZ(aheta);
+		//XMMATRIX X =  XMMatrixRotationZ(aheta);
 		XMMATRIX W = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
 		m_VSConstantBuffer.world = XMMatrixTranspose(W);
+		m_VSConstantBuffer.rot = XMMatrixTranspose(X);
 		m_VSConstantBuffer.worldInvTranspose = XMMatrixTranspose(InverseTranspose(W));
 
 		// 更新常量缓冲区，让立方体转起来

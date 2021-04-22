@@ -10,6 +10,7 @@ VertexPosHWNormalTex VS_3D(VertexPosNormalTex vIn)
     vOut.PosH = mul(posW, viewProj);
     vOut.PosW = posW.xyz;
     vOut.NormalW = mul(vIn.NormalL, (float3x3) g_WorldInvTranspose);
-    vOut.Tex = vIn.Tex;
+    vOut.Tex = mul(vIn.Tex, g_rot);
+    //vOut.Tex = vIn.Tex;
     return vOut;
 }
