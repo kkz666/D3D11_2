@@ -91,6 +91,17 @@ void GameApp::UpdateScene(float dt)
 	Keyboard::State state = m_pKeyboard->GetState();
 	m_KeyboardTracker.Update(state);	
 
+
+
+	 if (m_KeyboardTracker.IsKeyPressed(Keyboard::Q)) 
+	 {
+		if (m_PSConstantBuffer.numPointLight == 1)
+			m_PSConstantBuffer.numPointLight = 0;
+		else m_PSConstantBuffer.numPointLight = 1;
+
+
+	}
+
 	// 键盘切换模式
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::D1) && m_CurrMode != ShowMode::WoodCrate)
 	{
@@ -114,29 +125,7 @@ void GameApp::UpdateScene(float dt)
 		m_pd3dImmediateContext->PSSetShader(m_pPixelShader2D.Get(), nullptr, 0);
 		m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pFireAnims[0].GetAddressOf());
 	}
-	/*else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D3)){
-		m_PSConstantBuffer.numDirLight = 0;
-		m_PSConstantBuffer.numPointLight = 0;
-		m_PSConstantBuffer.numSpotLight = 0;
-		m_PSConstantBuffer.dirLight[0] = DirectionalLight();
-		m_PSConstantBuffer.pointLight[0] = PointLight();
-		m_PSConstantBuffer.spotLight[0] = SpotLight();
-	
-	
-	
-	}
-	else if (m_KeyboardTracker.IsKeyPressed(Keyboard::D4)) {
-		m_PSConstantBuffer.numDirLight = 1;
-		m_PSConstantBuffer.numPointLight = 0;
-		m_PSConstantBuffer.numSpotLight = 0;
-		m_PSConstantBuffer.dirLight[0] = DirectionalLight();
-		m_PSConstantBuffer.pointLight[0] = m_PointLight;
-		m_PSConstantBuffer.spotLight[0] = SpotLight();
 
-
-
-
-	}*/
 	if (m_CurrMode == ShowMode::WoodCrate)
 	{
 		static float phi = 0.0f, theta = 0.0f;
@@ -169,6 +158,10 @@ void GameApp::UpdateScene(float dt)
 			m_pd3dImmediateContext->PSSetShaderResources(0, 1, m_pFireAnims[m_CurrFrame].GetAddressOf());
 		}		
 	}
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	HR(m_pd3dImmediateContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
+	m_pd3dImmediateContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 }
 
 void GameApp::DrawScene()
@@ -302,9 +295,9 @@ bool GameApp::InitResource()
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;//D3D11_TEXTURE_ADDRESS_WRAP;
 	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;//D3D11_TEXTURE_ADDRESS_WRAP;
 	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;//D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.BorderColor[0] = 0.0f;
-	sampDesc.BorderColor[1] = 0.0f;
-	sampDesc.BorderColor[2] = 0.0f;
+	sampDesc.BorderColor[0] = 1.0f;
+	sampDesc.BorderColor[1] = 1.0f;
+	sampDesc.BorderColor[2] = 1.0f;
 	sampDesc.BorderColor[3] = 1.0f;
 	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	sampDesc.MinLOD = 0;
@@ -338,26 +331,28 @@ bool GameApp::InitResource()
 
 
 
+	//m_PSConstantBuffer.dirLight[0] = m_DirLight;
 
 
 
 
 
 
-
-	m_PSConstantBuffer.pointLight[0].position = XMFLOAT3(0.0f, 0.0f, -10.0f);
-	m_PSConstantBuffer.pointLight[0].ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_PSConstantBuffer.pointLight[0].diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_PSConstantBuffer.pointLight[0].specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_PSConstantBuffer.pointLight[0].att = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_PSConstantBuffer.pointLight[0].position = XMFLOAT3(0.5f, 0.5f, -10.0f);
+	m_PSConstantBuffer.pointLight[0].ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+	m_PSConstantBuffer.pointLight[0].diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+	m_PSConstantBuffer.pointLight[0].specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+	m_PSConstantBuffer.pointLight[0].att = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	m_PSConstantBuffer.pointLight[0].range = 25.0f;
-	m_PSConstantBuffer.numDirLight = 1;
-	m_PSConstantBuffer.numPointLight = 0;
+
+
+	m_PSConstantBuffer.numDirLight = 0;
+	m_PSConstantBuffer.numPointLight = 1;
 	m_PSConstantBuffer.numSpotLight = 0;
 	// 初始化材质
 	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_PSConstantBuffer.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBuffer.material.specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 5.0f);
+	m_PSConstantBuffer.material.diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_PSConstantBuffer.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 5.0f);
 	// 注意不要忘记设置此处的观察位置，否则高亮部分会有问题
 	m_PSConstantBuffer.eyePos = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
 
