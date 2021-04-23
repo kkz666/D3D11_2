@@ -206,7 +206,7 @@ void GameApp::DrawScene()
 	if (m_pd2dRenderTarget != nullptr)
 	{
 		m_pd2dRenderTarget->BeginDraw();
-		static const WCHAR* textStr = L"切换显示: 1-木箱(3D) 2-火焰(2D)\n";
+		static const WCHAR* textStr = L"切换显示: 1-木箱(3D) 2-火焰(2D)  Q-开关灯\n";
 		static const WCHAR* textStra = L"2021QG工作室图形组第4次小组培训\n 张凯\n 2021年4月22日\n";
 		m_pd2dRenderTarget->DrawTextW(textStr, (UINT)wcslen(textStr), m_pTextFormat.Get(),
 			D2D1_RECT_F{ 0.0f, 0.0f, 600.0f, 200.0f }, m_pColorBrush.Get());
