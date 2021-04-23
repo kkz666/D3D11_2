@@ -95,9 +95,9 @@ void GameApp::UpdateScene(float dt)
 
 	 if (m_KeyboardTracker.IsKeyPressed(Keyboard::Q)) 
 	 {
-		if (m_PSConstantBuffer.numPointLight == 1)
-			m_PSConstantBuffer.numPointLight = 0;
-		else m_PSConstantBuffer.numPointLight = 1;
+		if (m_PSConstantBuffer.numDirLight == 1)
+			m_PSConstantBuffer.numDirLight = 0;
+		else m_PSConstantBuffer.numDirLight = 1;
 
 
 	}
@@ -346,8 +346,8 @@ bool GameApp::InitResource()
 	m_PSConstantBuffer.pointLight[0].range = 25.0f;
 
 
-	m_PSConstantBuffer.numDirLight = 0;
-	m_PSConstantBuffer.numPointLight = 1;
+	m_PSConstantBuffer.numDirLight = 1;
+	m_PSConstantBuffer.numPointLight = 0;
 	m_PSConstantBuffer.numSpotLight = 0;
 	// 初始化材质
 	m_PSConstantBuffer.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
